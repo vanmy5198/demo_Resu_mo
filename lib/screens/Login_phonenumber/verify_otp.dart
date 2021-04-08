@@ -35,7 +35,6 @@ class _BodyWidgetOTPState extends State<BodyWidgetOTP> {
   final pin6Controller = TextEditingController();
   String otp;
   String otpReal;
-  bool isEqual = false;
   FocusNode pin1FocusNode;
   FocusNode pin2FocusNode;
   FocusNode pin3FocusNode;
@@ -79,6 +78,66 @@ class _BodyWidgetOTPState extends State<BodyWidgetOTP> {
     String pin5 = pin5Controller.text;
     String pin6 = pin6Controller.text;
     otpReal = '$pin1$pin2$pin3$pin4$pin5$pin6';
+  }
+
+  void openAlertValid(BuildContext context) {
+    // Create a AlertDialog.
+    AlertDialog dialog = AlertDialog(
+      title: Text(""),
+      content: Text("本人確認が完了 し ま し た。"),
+      actions: [
+        TextButton(
+          onPressed: null,
+          child: Text('OK'),
+        ),
+      ],
+    );
+
+    // Call showDialog function.
+    Future<bool> futureValue = showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return dialog;
+        });
+    futureValue.then((value) {
+      print("Return value: " + value.toString()); // true/false
+    });
+  }
+
+  void openAlertInvalid(BuildContext context) {
+    // Create a AlertDialog.
+    AlertDialog dialog = AlertDialog(
+      title: Text("エラ一"),
+      content: Text("認証コ-ドが無効です。再度、 認証コードを送信しなおしてください。"),
+      actions: [
+        TextButton(
+          onPressed: null,
+          child: Text('戻る'),
+        ),
+      ],
+    );
+
+    // Call showDialog function.
+    Future<bool> futureValue = showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return dialog;
+        });
+    futureValue.then((value) {
+      print("Return value: " + value.toString()); // true/false
+    });
+  }
+
+  createAlert() {
+    if (otpReal.length == 6) {
+      if (otp == otpReal) {
+        print('Valid OTP: $otpReal , $otp');
+        openAlertValid(context);
+      } else {
+        print('Invalid OTP');
+        openAlertInvalid(context);
+      }
+    }
   }
 
   void nextField(String value, FocusNode focusNode) {
@@ -136,8 +195,6 @@ class _BodyWidgetOTPState extends State<BodyWidgetOTP> {
                   autofocus: true,
                   onChanged: (value) {
                     nextField(value, pin2FocusNode);
-                    // myController.text = isNumeric(value) ? value : '';
-                    // myController.selection = TextSelection.collapsed(offset: 1);
                   },
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
@@ -289,17 +346,7 @@ class _BodyWidgetOTPState extends State<BodyWidgetOTP> {
                   onChanged: (value) {
                     previousField(value, pin5FocusNode);
                     printPin();
-                    if (otpReal.length == 6) {
-                      if (otp == otpReal) {
-                        print('Valid OTP: $otpReal , $otp');
-                        // setState(() {
-                        //   isEqual = true;
-                        // });
-
-                      } else {
-                        print('Invalid OTP');
-                      }
-                    }
+                    createAlert();
                   },
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,

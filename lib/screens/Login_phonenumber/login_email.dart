@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:resu_mo/Screens/Login_phonenumber/verify_otp.dart';
-import 'package:resu_mo/screens/Login_phonenumber/login_email.dart';
 
-class Loginphonenumber extends StatelessWidget {
+class LoginEmail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,30 +13,30 @@ class Loginphonenumber extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       )),
-      body: BodyWidget(),
+      body: BodyWidgetEmail(),
     );
   }
 }
 
-class BodyWidget extends StatefulWidget {
+class BodyWidgetEmail extends StatefulWidget {
   @override
-  _BodyWidgetState createState() => _BodyWidgetState();
+  _BodyWidgetEmailState createState() => _BodyWidgetEmailState();
 }
 
-class _BodyWidgetState extends State<BodyWidget> {
-  bool isEnable = false;
+class _BodyWidgetEmailState extends State<BodyWidgetEmail> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   void validate() {
     if (formKey.currentState.validate()) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => verifyOTP()));
+      // print('valid');
     } else {
       print("invalid");
     }
   }
 
-  String validatePhone(value) {
-    Pattern pattern = r'(^(?:[+0]9)?[0-9]{10}$)';
+  String validateEmail(value) {
+    Pattern pattern = r'^[a-z0-9](\.?[a-z0-9]){5,}@g(oogle)?mail\.com$';
     RegExp regex = new RegExp(pattern);
     if (value.isEmpty) {
       return "要求";
@@ -61,7 +59,7 @@ class _BodyWidgetState extends State<BodyWidget> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Text(
-              "携帯電話番号を入力してください",
+              "メ一ルア ド レスを入力 してく ださい",
               textAlign: TextAlign.left,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
@@ -69,7 +67,7 @@ class _BodyWidgetState extends State<BodyWidget> {
               height: 15,
             ),
             Text(
-              "本人確認のために、携帯電話のSMS（ショートメッセージサービス）を利用して認証を行います。",
+              "本人確認のため、 入力 したメールア ド レスに認証コ一 ドが送信されます。",
               textAlign: TextAlign.left,
               style: TextStyle(color: Colors.black26),
             ),
@@ -77,11 +75,10 @@ class _BodyWidgetState extends State<BodyWidget> {
               height: 15,
             ),
             TextFormField(
-              keyboardType: TextInputType.phone,
               decoration: InputDecoration(
-                hintText: "携帯電話番号",
+                hintText: "メ一ルア ド レス",
               ),
-              validator: validatePhone,
+              validator: validateEmail,
             ),
             SizedBox(
               height: 40,
@@ -96,30 +93,6 @@ class _BodyWidgetState extends State<BodyWidget> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),
                   onPressed: validate),
-            ),
-            SizedBox(
-              height: 100,
-            ),
-            Text(
-              "すでに会員登録されていて携帯電話番号を変更された方",
-              style: TextStyle(color: Colors.black87, fontSize: 14),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            SizedBox(
-              width: 500,
-              height: 60,
-              // ignore: deprecated_member_use
-              child: FlatButton(
-                  color: Colors.yellow.shade400,
-                  child: Text("メールアドレスでログイン"),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginEmail()));
-                  }),
             ),
           ],
         ),
