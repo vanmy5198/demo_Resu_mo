@@ -26,29 +26,67 @@ class BodyWidget extends StatefulWidget {
 }
 
 class _BodyWidgetState extends State<BodyWidget> {
-  bool isEnable = false;
+  bool isButtonEnable = false;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   void validate() {
     if (formKey.currentState.validate()) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => verifyOTP()));
+      openAlertValid(context);
     } else {
       print("invalid");
     }
   }
 
+  void openAlertValid(BuildContext context) {
+    // Create a AlertDialog.
+    AlertDialog dialog = AlertDialog(
+      title: Text(''),
+      content: Text(
+        "上記の蓄号にSMSで \n認証コードを送信します。",
+        textAlign: TextAlign.center,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(false);
+          },
+          child: Text('キヤンセル'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(true);
+
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => verifyOTP()));
+          },
+          child: Text('送る'),
+        ),
+      ],
+    );
+
+    // Call showDialog function.
+    Future<bool> futureValue = showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return dialog;
+        });
+    futureValue.then((value) {
+      print("Return value: " + value.toString()); // true/false
+    });
+  }
+
   String validatePhone(value) {
     Pattern pattern = r'(^(?:[+0]9)?[0-9]{10}$)';
     RegExp regex = new RegExp(pattern);
-    if (value.isEmpty) {
-      return "要求";
-    }
-    if (!regex.hasMatch(value)) {
-      return "電話番号が正しい形式ではありません。もう一度入力してください。";
+
+    if (value.isEmpty || !regex.hasMatch(value)) {
+      return "";
     } else {
       return null;
     }
   }
+
+  disableButton() {}
 
   @override
   Widget build(BuildContext context) {
@@ -82,20 +120,31 @@ class _BodyWidgetState extends State<BodyWidget> {
                 hintText: "携帯電話番号",
               ),
               validator: validatePhone,
+              onChanged: (val) {
+                print(val.length);
+                if (val.length == 10)
+                  setState(() => isButtonEnable = true);
+                else
+                  setState(() => isButtonEnable = false);
+              },
             ),
             SizedBox(
               height: 40,
             ),
             SizedBox(
-              width: 500,
               height: 60,
-              // ignore: deprecated_member_use
-              child: FlatButton(
-                  color: Colors.yellow.shade400,
-                  child: Text("認証コードを送信する"),
+              width: 500,
+              child: TextButton(
+                onPressed: isButtonEnable ? () => validate() : null,
+                child: Text('認証コードを送信する'),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.yellow.shade400,
+                  primary: Colors.black,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  onPressed: validate),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
             ),
             SizedBox(
               height: 100,
@@ -108,19 +157,23 @@ class _BodyWidgetState extends State<BodyWidget> {
               height: 20,
             ),
             SizedBox(
-              width: 500,
               height: 60,
-              // ignore: deprecated_member_use
-              child: FlatButton(
-                  color: Colors.yellow.shade400,
-                  child: Text("メールアドレスでログイン"),
+              width: 500,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginEmail()));
+                },
+                child: Text('メールアドレスでログイン'),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.yellow.shade400,
+                  primary: Colors.black,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginEmail()));
-                  }),
-            ),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),

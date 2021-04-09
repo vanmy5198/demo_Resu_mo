@@ -38,11 +38,8 @@ class _BodyWidgetEmailState extends State<BodyWidgetEmail> {
   String validateEmail(value) {
     Pattern pattern = r'^[a-z0-9](\.?[a-z0-9]){5,}@g(oogle)?mail\.com$';
     RegExp regex = new RegExp(pattern);
-    if (value.isEmpty) {
-      return "要求";
-    }
-    if (!regex.hasMatch(value)) {
-      return "電話番号が正しい形式ではありません。もう一度入力してください。";
+    if (value.isEmpty || !regex.hasMatch(value)) {
+      return "メールアドレスが正しい形式ではありません。もう一度入力してください。";
     } else {
       return null;
     }

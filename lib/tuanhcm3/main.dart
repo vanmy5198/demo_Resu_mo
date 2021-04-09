@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 
 import 'config/amplifyconfiguration.dart';
 
-// void main() {
-//   runApp(
-//     MaterialApp(
-//       title: 'Amplifutter',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//         visualDensity: VisualDensity.adaptivePlatformDensity,
-//       ),
-//       home: Ampliflutter(),
-//     ),
-//   );
-// }
+void main() {
+  runApp(
+    MaterialApp(
+      title: 'Amplifutter',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: Ampliflutter(),
+    ),
+  );
+}
 
 class Ampliflutter extends StatefulWidget {
   @override
@@ -25,6 +25,7 @@ class Ampliflutter extends StatefulWidget {
 class _AmpliflutterState extends State<Ampliflutter> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _otp = TextEditingController();
+  bool _amplifyConfigured = false;
 
   Future<void> _configureAmplify() async {
     if (!mounted) return;
@@ -39,7 +40,9 @@ class _AmpliflutterState extends State<Ampliflutter> {
       print("Amplify was already configured. Was the app restarted?");
     }
 
-    try {} catch (e) {
+    try {
+      setState(() => _amplifyConfigured = true);
+    } catch (e) {
       print(e);
     }
   }
@@ -71,16 +74,27 @@ class _AmpliflutterState extends State<Ampliflutter> {
                   decoration: InputDecoration(labelText: "OTP"),
                   controller: _otp,
                 ),
-                RaisedButton(
-                    child: Text("CREATE ACCOUNT"),
-                    onPressed: () => _createAccountOnPressed(context),
-                    color: Theme.of(context).primaryColor,
-                    colorBrightness: Theme.of(context).primaryColorBrightness),
-                RaisedButton(
-                    child: Text("SignIn ACCOUNT"),
-                    onPressed: () => _signIn(context),
-                    color: Theme.of(context).primaryColor,
-                    colorBrightness: Theme.of(context).primaryColorBrightness),
+                ElevatedButton(
+                  child: Text("CREATE ACCOUNT"),
+                  onPressed: () => _createAccountOnPressed(context),
+                  style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).primaryColor,
+                      onPrimary: Theme.of(context).primaryColorLight),
+                ),
+                ElevatedButton(
+                  child: Text("SIGNIN ACCOUNT"),
+                  onPressed: () => _signIn(context),
+                  style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).primaryColor,
+                      onPrimary: Theme.of(context).primaryColorLight),
+                ),
+                ElevatedButton(
+                  child: Text("VERIFY ACCOUNT"),
+                  onPressed: () => _verify(context),
+                  style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).primaryColor,
+                      onPrimary: Theme.of(context).primaryColorLight),
+                ),
               ],
               mainAxisAlignment: MainAxisAlignment.center,
             )));
@@ -95,10 +109,10 @@ class _AmpliflutterState extends State<Ampliflutter> {
     try {
       SignUpResult res = await Amplify.Auth.signUp(
           username: phone,
-          password: '123',
+          password: '111111Abc@',
           options: CognitoSignUpOptions(userAttributes: {
             'phone_number': phone,
-            "email": 'leon.tuanhm@gmail.com'
+            "email": 'leon.mytv@gmail.com'
           }));
       print('lol ${res.isSignUpComplete}');
     } catch (e) {
@@ -113,7 +127,8 @@ class _AmpliflutterState extends State<Ampliflutter> {
     final phone = _phoneController.text;
     SignInResult cognitoUser;
     try {
-      cognitoUser = await Amplify.Auth.signIn(username: phone, password: '123');
+      cognitoUser =
+          await Amplify.Auth.signIn(username: phone, password: '111111Abc@');
       if (cognitoUser.isSignedIn) {
         print('sent');
       }
@@ -127,6 +142,23 @@ class _AmpliflutterState extends State<Ampliflutter> {
         await Amplify.Auth.confirmSignIn(confirmationValue: _otp.text);
     if (tmp.isSignedIn) {
       print('success');
+    }
+  }
+
+  Future<void> _verify(BuildContext context) async {
+    final phone = _phoneController.text;
+    final otp = _otp.text;
+    SignUpResult cognitoUser;
+    try {
+      cognitoUser = await Amplify.Auth.confirmSignUp(
+          username: phone, confirmationCode: '111111');
+      if (cognitoUser.isSignUpComplete) {
+        print('lol signup');
+      }
+    } catch (e) {
+      // Handle sign in errors
+      print('error lol');
+      print(e);
     }
   }
 }
