@@ -3,6 +3,7 @@ import 'package:resu_mo/Screens/Login_phonenumber/login_phone_number.dart';
 import 'package:resu_mo/anhdhq/app.dart';
 import 'package:resu_mo/tuanhcm1/app.dart';
 import 'package:resu_mo/tuanhcm2/app.dart';
+import 'package:resu_mo/tuanhcm3/main.dart';
 
 void main() {
   runApp(MyApp());
@@ -61,7 +62,12 @@ class _BodyWidgetState extends State<BodyWidget> {
                   context, MaterialPageRoute(builder: (context) => App2()));
             },
             child: Text('TuanHCM_pj2')),
-        ElevatedButton(onPressed: () {}, child: Text('TuanHCM_pj3')),
+        ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Ampliflutter()));
+            },
+            child: Text('TuanHCM_pj3')),
       ]),
     );
   }
